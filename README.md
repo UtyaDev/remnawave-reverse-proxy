@@ -166,13 +166,22 @@ The panel remains invisible without the correct authentication parameter.
 - **TCP Optimization**: BBR congestion control algorithm
 - **Masking**: Random website template selection
 
+### Advanced Extensions
+- **AntiZapret-Core** (by UtyaDev): Integration for smart routing.
+  - Automatic configuration of node routing rules.
+  - Automatic creation and update of Remnawave subscription templates.
+  - Daily synchronization of blocked resources and container updates via cron.
+- **Custom Sub-Page Templates** (by legiz): Customize the subscription page with Orion and other templates.
+- **WARP Native** (by distillium): Easy integration of Cloudflare WARP for outbounds.
+- **Backup and Restore** (by distillium): Tools for managing your panel and node data.
+
 ---
 
 ## Quick Start
 
 Execute the following command to begin installation:
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/eGamesAPI/remnawave-reverse-proxy/refs/heads/main/install_remnawave.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/UtyaDev/remnawave-reverse-proxy/refs/heads/main/install_remnawave.sh)
 ```
 
 <p align="center">

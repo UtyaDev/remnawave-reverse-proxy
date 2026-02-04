@@ -1,10 +1,11 @@
 #!/bin/bash
 
-SCRIPT_VERSION="2.3.4"
+SCRIPT_VERSION="2.3.4.1"
 UPDATE_AVAILABLE=false
 DIR_REMNAWAVE="/usr/local/remnawave_reverse/"
 LANG_FILE="${DIR_REMNAWAVE}selected_language"
-SCRIPT_URL="https://raw.githubusercontent.com/eGamesAPI/remnawave-reverse-proxy/refs/heads/main/install_remnawave.sh"
+DIR_ANTIZAPRET="/opt/antizapret/"
+SCRIPT_URL="https://raw.githubusercontent.com/UtyaDev/remnawave-reverse-proxy/refs/heads/main/install_remnawave.sh"
 
 COLOR_RESET="\033[0m"
 COLOR_GREEN="\033[1;32m"
@@ -75,9 +76,13 @@ set_language() {
                 [ERROR_DOCKER_DNS]="Error: Unable to resolve download.docker.com. Check your DNS settings."
                 [ERROR_INSTALL_CERTBOT]="Error: Failed to install certbot"
                 [SUCCESS_INSTALL]="All packages installed successfully"
+                #Swap
+                [SWAP_RAM_LOW]="Total RAM is less than 2GB. Creating a 2GB swap file..."
+                [SWAP_CREATED_SUCCESS]="2GB swap file created and enabled."
+                [SWAP_ALREADY_EXISTS]="Swap file already exists in /etc/fstab. Skipping creation."
                 #Menu
                 [MENU_TITLE]="REMNAWAVE REVERSE-PROXY by eGames"
-				[AVAILABLE_UPDATE]="update available"
+                [AVAILABLE_UPDATE]="update available"
                 [VERSION_LABEL]="Version: %s"
                 [EXIT]="Exit"
                 [MENU_1]="Install Remnawave Components"
@@ -86,12 +91,13 @@ set_language() {
                 [MENU_4]="Install random template for selfsteal node"
                 [MENU_5]="Custom extensions by legiz"
                 [MENU_6]="Extensions by distillium"
-                [MENU_7]="Manage IPv6"
-                [MENU_8]="Manage certificates domain"
-                [MENU_9]="Check for updates script"
-                [MENU_10]="Remove script"
-                [PROMPT_ACTION]="Select action (0-10):"
-                [INVALID_CHOICE]="Invalid choice. Please select 0-10"
+                [MENU_7]="Manage AntiZapret-Core module by UtyaDev"
+                [MENU_8]="Manage IPv6"
+                [MENU_9]="Manage certificates domain"
+                [MENU_10]="Check for updates script"
+                [MENU_11]="Remove script"
+                [PROMPT_ACTION]="Select action (0-11):"
+                [INVALID_CHOICE]="Invalid choice. Please select 0-11"
                 [WARNING_LABEL]="WARNING:"
                 [CONFIRM_PROMPT]="Enter 'y' to continue or 'n' to exit (y/n):"
                 [WARNING_NODE_PANEL]="Adding a node should only be done on the server where the panel is installed, not on the node server."
@@ -371,6 +377,54 @@ set_language() {
                 [PORT_8443_ALREADY_CLOSED]="Port 8443 already closed in UFW."
                 #Legiz Extensions
                 [LEGIZ_EXTENSIONS_PROMPT]="Select action (0-2):"
+                #AntiZapret
+                [ANTIZAPRET_MENU_TITLE]="Manage AntiZapret-Core module by UtyaDev"
+                [ANTIZAPRET_CONFIGURATION_PROMPT]="Configuration:"
+                [ANTIZAPRET_INSTALL]="Install AntiZapret-Core"
+                [ANTIZAPRET_UNINSTALL]="Uninstall AntiZapret-Core"
+                [ANTIZAPRET_CONTAINER_NOT_FOUND]="AntiZapret-Core is not installed"
+                [ANTIZAPRET_LOGS]="View Logs"
+                [ANTIZAPRET_PROMPT]="Select action (0-5):"
+                [ANTIZAPRET_INVALID_CHOICE]="Invalid choice. Please select 0-5."
+                [ANTIZAPRET_INSTALLING]="Installing AntiZapret-Core..."
+                [ANTIZAPRET_UNINSTALLING]="Uninstalling AntiZapret-Core..."
+                [ANTIZAPRET_SUCCESS_INSTALL]="AntiZapret-Core installed successfully!"
+                [ANTIZAPRET_CONFIG_REMINDER]="Don't forget to fill in the /opt/antizapret/config/* files for correct operation."
+                [ANTIZAPRET_SUCCESS_UNINSTALL]="AntiZapret-Core uninstalled successfully!"
+                [ANTIZAPRET_ENTER_DNS]="1) Cloudflare+Quad9+MSK-IX+SkyDNS(default)\n     2) SkyDNS\n     3) Cloudflare+Quad9\n     4) Comss\n     5) XBox\n     6) Malw\n     Enter DNS (1-6) [Default: 1]:"
+                [ANTIZAPRET_ENTER_ALT_IP]="Use alternative range of IP addresses? (y/n) [Default: n]:"
+                [ANTIZAPRET_ENTER_ALT_FAKE_IP]="Use alternative range of FAKE IP addresses? (y/n) [Default: n]:"
+                [ANTIZAPRET_ENTER_SSH_PROT]="Enable SSH brute-force protection? (y/n) [Default: y]:"
+                [ANTIZAPRET_ENTER_ATTACK_PROT]="Enable network attack and scan protection? (y/n) [Default: y]:"
+                [ANTIZAPRET_ENTER_AGG_LIMIT]="Route aggregation limit (number of routes). 0 to disable. [Default: 500]:"
+                [ANTIZAPRET_ENTER_CLEAR_HOSTS]="Clear hosts from gambling and betting websites (y/n) [Default: y]:"
+                [ANTIZAPRET_ENTER_BYPASS_DOMAIN]="Enter the node domain:"
+                [ANTIZAPRET_DOMAIN_EMPTY]="Domain cannot be empty. Please try again."
+                [ANTIZAPRET_DOMAIN_INVALID]="Invalid domain or IP format. Please try again."
+                [ANTIZAPRET_DOWNLOAD_COMPOSE]="Downloading docker-compose.yml..."
+                [ANTIZAPRET_ADD_CONFIG]="Add AntiZapret-Core-settings to node configuration"
+                [ANTIZAPRET_DELETE_CONFIG]="Remove AntiZapret-Core-settings from node configuration"
+                [ANTIZAPRET_SELECT_CONFIG]="Select node to add AntiZapret-Core-settings?"
+                [ANTIZAPRET_SELECT_CONFIG_DELETE]="Select node to remove AntiZapret-Core-settings?"
+                [ANTIZAPRET_ADD_SUCCESS]="AntiZapret settings successfully added!"
+                [ANTIZAPRET_UPDATE_SUCCESS]="Configuration successfully updated!"
+                [ANTIZAPRET_DELETE_SUCCESS]="AntiZapret configuration removed successfully!"
+                [ANTIZAPRET_UPDATE_FAIL]="Failed to update configuration."
+                [ANTIZAPRET_CONFIRM_SERVER_PANEL]="Are you sure you are on the server with the installed panel?\nAdding AntiZapret-Core-settings should only be done on the server where the panel is installed, not on the node server"
+                [ANTIZAPRET_DNS_REMOVED]="DNS settings removed successfully"
+                [ANTIZAPRET_DNS_NOT_FOUND]="DNS settings not found"
+                [ANTIZAPRET_RULE_REMOVED]="Routing rules removed successfully"
+                [ANTIZAPRET_RULE_NOT_FOUND]="Routing rules not found"
+                [ANTIZAPRET_CONFIG_REMINDER_EMPTY_ROUTE_IPS]="%s are empty, did you forget to fill config/*?"
+                [ANTIZAPRET_ADDING_SETTINGS]="Adding AntiZapret-Core-settings..."
+                [ANTIZAPRET_NODE_CONFIG_SUCCESS]="Node configuration updated successfully."
+                [ANTIZAPRET_TEMPLATE_UPDATED_SUCCESS]="AntiZapret subscription template updated successfully."
+                [ANTIZAPRET_TEMPLATE_CREATED_SUCCESS]="AntiZapret subscription template added successfully."
+                [ANTIZAPRET_DELETE_TEMPLATE_FAIL]="Failed to delete AntiZapret subscription template."
+                [ANTIZAPRET_DELETE_TEMPLATE_SUCCESS]="AntiZapret subscription template deleted successfully."
+                [ANTIZAPRET_TEMPLATE_NOT_FOUND_DELETE]="AntiZapret subscription template not found, skipping deletion."
+                [ANTIZAPRET_CRON_JOB_ADDED]="Added cron job for AntiZapret update (Profile UUID: %s)."
+                [ANTIZAPRET_CRON_JOB_REMOVED]="Removed cron job for AntiZapret update."
                 # Sub Page Upload
                 [UPLOADING_SUB_PAGE]="Uploading custom sub page template..."
                 [ERROR_FETCH_SUB_PAGE]="Failed to fetch custom sub page template."
@@ -472,7 +526,7 @@ set_language() {
                 [ERROR_ROOT]="Скрипт нужно запускать с правами root"
                 [ERROR_OS]="Поддержка только Debian 11/12 и Ubuntu 22.04/24.04"
                 [MENU_TITLE]="REMNAWAVE REVERSE-PROXY by eGames"
-				[AVAILABLE_UPDATE]="доступно обновление"
+                [AVAILABLE_UPDATE]="доступно обновление"
                 [VERSION_LABEL]="Версия: %s"
                 #Install Packages
                 [ERROR_UPDATE_LIST]="Ошибка: Не удалось обновить список пакетов"
@@ -492,6 +546,10 @@ set_language() {
                 [ERROR_DOCKER_DNS]="Ошибка: Не удалось разрешить домен download.docker.com. Проверьте настройки DNS."
                 [ERROR_INSTALL_CERTBOT]="Ошибка: Не удалось установить certbot"
                 [SUCCESS_INSTALL]="Все пакеты успешно установлены"
+                #Swap
+                [SWAP_RAM_LOW]="Общая оперативная память менее 2ГБ. Создаю swap файл размером 2ГБ..."
+                [SWAP_CREATED_SUCCESS]="Swap файл размером 2ГБ создан и активирован."
+                [SWAP_ALREADY_EXISTS]="Swap файл уже существует в /etc/fstab. Пропускаю создание."
                 #Main menu
                 [EXIT]="Выход"
                 [MENU_1]="Установка компонентов Remnawave"
@@ -500,12 +558,13 @@ set_language() {
                 [MENU_4]="Установить случайный шаблон для selfsteal ноды"
                 [MENU_5]="Кастомные расширения от legiz"
                 [MENU_6]="Управление расширениями от distillium"
-                [MENU_7]="Управление IPv6"
-                [MENU_8]="Управление сертификатами домена"
-                [MENU_9]="Проверить обновления скрипта"
-                [MENU_10]="Удалить скрипт"
-                [PROMPT_ACTION]="Выберите действие (0-10):"
-                [INVALID_CHOICE]="Неверный выбор. Выберите 0-10."
+                [MENU_7]="Управление модулем AntiZapret-Core от UtyaDev"
+                [MENU_8]="Управление IPv6"
+                [MENU_9]="Управление сертификатами домена"
+                [MENU_10]="Проверить обновления скрипта"
+                [MENU_11]="Удалить скрипт"
+                [PROMPT_ACTION]="Выберите действие (0-11):"
+                [INVALID_CHOICE]="Неверный выбор. Выберите 0-11."
                 [WARNING_LABEL]="ВНИМАНИЕ:"
                 [CONFIRM_PROMPT]="Введите 'y' для продолжения или 'n' для выхода (y/n):"
                 [WARNING_NODE_PANEL]="Добавление ноды должно выполняться только на сервере, где установлена панель, а не на сервере ноды."
@@ -784,6 +843,54 @@ set_language() {
                 [PORT_8443_ALREADY_CLOSED]="Порт 8443 уже закрыт в UFW."
                 #Legiz Extensions
                 [LEGIZ_EXTENSIONS_PROMPT]="Выберите действие (0-2):"
+                #AntiZapret
+                [ANTIZAPRET_MENU_TITLE]="Управление модулем AntiZapret-Core от UtyaDev"
+                [ANTIZAPRET_CONFIGURATION_PROMPT]="Конфигурация:"
+                [ANTIZAPRET_INSTALL]="Установить AntiZapret-Core"
+                [ANTIZAPRET_UNINSTALL]="Удалить AntiZapret-Core"
+                [ANTIZAPRET_CONTAINER_NOT_FOUND]="AntiZapret-Core не установлен"
+                [ANTIZAPRET_LOGS]="Просмотр логов"
+                [ANTIZAPRET_PROMPT]="Выберите действие (0-5):"
+                [ANTIZAPRET_INVALID_CHOICE]="Неверный выбор. Выберите 0-5."
+                [ANTIZAPRET_INSTALLING]="Установка AntiZapret-Core..."
+                [ANTIZAPRET_UNINSTALLING]="Удаление AntiZapret-Core..."
+                [ANTIZAPRET_SUCCESS_INSTALL]="AntiZapret-Core успешно установлен!"
+                [ANTIZAPRET_CONFIG_REMINDER]="Не забудьте заполнить файлы /opt/antizapret/config/* для корректной работы."
+                [ANTIZAPRET_SUCCESS_UNINSTALL]="AntiZapret-Core успешно удален!"
+                [ANTIZAPRET_ENTER_DNS]="1) Cloudflare+Quad9+MSK-IX+SkyDNS(по умолчанию)\n     2) SkyDNS\n     3) Cloudflare+Quad9\n     4) Comss\n     5) XBox\n     6) Malw\n     Введите DNS (1-6) [По умолчанию: 1]:"
+                [ANTIZAPRET_ENTER_ALT_IP]="Использовать альтернативный диапазон IP-адресов? (y/n) [По умолчанию: n]:"
+                [ANTIZAPRET_ENTER_ALT_FAKE_IP]="Использовать альтернативный диапазон FAKE IP-адресов? (y/n) [По умолчанию: n]:"
+                [ANTIZAPRET_ENTER_SSH_PROT]="Включить защиту от брутфорса SSH? (y/n) [По умолчанию: y]:"
+                [ANTIZAPRET_ENTER_ATTACK_PROT]="Включить защиту от сетевых атак и сканирования? (y/n) [По умолчанию: y]:"
+                [ANTIZAPRET_ENTER_AGG_LIMIT]="Лимит агрегации маршрутов (количество маршрутов). 0 для отключения. [По умолчанию: 500]:"
+                [ANTIZAPRET_ENTER_CLEAR_HOSTS]="Очищать хосты от сайтов азартных игр и ставок (y/n) [По умолчанию: y]:"
+                [ANTIZAPRET_ENTER_BYPASS_DOMAIN]="Введите домен ноды:"
+                [ANTIZAPRET_DOMAIN_EMPTY]="Домен не может быть пустым. Пожалуйста, попробуйте снова."
+                [ANTIZAPRET_DOMAIN_INVALID]="Неверный формат домена или IP. Пожалуйста, попробуйте снова."
+                [ANTIZAPRET_DOWNLOAD_COMPOSE]="Загрузка docker-compose.yml..."
+                [ANTIZAPRET_ADD_CONFIG]="Добавить AntiZapret-Core в конфигурацию ноды"
+                [ANTIZAPRET_DELETE_CONFIG]="Удалить AntiZapret-Core из конфигурации ноды"
+                [ANTIZAPRET_SELECT_CONFIG]="На какую ноду добавить AntiZapret-Core-настройки?"
+                [ANTIZAPRET_SELECT_CONFIG_DELETE]="На какой ноде удалить AntiZapret-Core-настройки?"
+                [ANTIZAPRET_ADD_SUCCESS]="Настройки AntiZapret успешно добавлены!"
+                [ANTIZAPRET_UPDATE_SUCCESS]="Конфигурация успешно обновлена!"
+                [ANTIZAPRET_DELETE_SUCCESS]="Настройки AntiZapret успешно удалены!"
+                [ANTIZAPRET_UPDATE_FAIL]="Не удалось обновить конфигурацию."
+                [ANTIZAPRET_CONFIRM_SERVER_PANEL]="Вы уверены, что находитесь на сервере с установленной панелью?\nДобавление AntiZapret-Core-настроек должно выполняться только на сервере, где установлена панель, а не на сервере ноды"
+                [ANTIZAPRET_DNS_REMOVED]="Настройки DNS успешно удалены"
+                [ANTIZAPRET_DNS_NOT_FOUND]="Настройки DNS не найдены"
+                [ANTIZAPRET_RULE_REMOVED]="Правила маршрутизации успешно удалены"
+                [ANTIZAPRET_RULE_NOT_FOUND]="Правила маршрутизации не найдены"
+                [ANTIZAPRET_CONFIG_REMINDER_EMPTY_ROUTE_IPS]="В %s пусто, вы забыли заполнить config/*?"
+                [ANTIZAPRET_ADDING_SETTINGS]="Добавление AntiZapret-Core-настроек..."
+                [ANTIZAPRET_NODE_CONFIG_SUCCESS]="Конфигурация ноды успешно обновлена."
+                [ANTIZAPRET_TEMPLATE_UPDATED_SUCCESS]="Шаблон подписки AntiZapret успешно обновлен."
+                [ANTIZAPRET_TEMPLATE_CREATED_SUCCESS]="Шаблон подписки AntiZapret успешно добавлен."
+                [ANTIZAPRET_DELETE_TEMPLATE_FAIL]="Не удалось удалить шаблон подписки AntiZapret."
+                [ANTIZAPRET_DELETE_TEMPLATE_SUCCESS]="Шаблон подписки AntiZapret успешно удален."
+                [ANTIZAPRET_TEMPLATE_NOT_FOUND_DELETE]="Шаблон подписки AntiZapret не найден, пропуск удаления."
+                [ANTIZAPRET_CRON_JOB_ADDED]="Добавлена задача cron для обновления AntiZapret (UUID профиля: %s)."
+                [ANTIZAPRET_CRON_JOB_REMOVED]="Удалена задача cron для обновления AntiZapret."
                 # Sub Page Upload
                 [UPLOADING_SUB_PAGE]="Загрузка пользовательского шаблона страницы подписки..."
                 [ERROR_FETCH_SUB_PAGE]="Не удалось получить пользовательский шаблон страницы подписки."
@@ -1013,7 +1120,7 @@ update_panel_node() {
 
     if [ "$before" != "$after" ] || echo "$pull_output" | grep -q "Pull complete"; then
         echo -e ""
-	echo -e "${COLOR_YELLOW}${LANG[IMAGES_DETECTED]}${COLOR_RESET}"
+        echo -e "${COLOR_YELLOW}${LANG[IMAGES_DETECTED]}${COLOR_RESET}"
         docker compose down > /dev/null 2>&1 &
         spinner $! "${LANG[WAITING]}"
         sleep 5
@@ -1092,7 +1199,7 @@ update_remnawave_reverse() {
 
 remove_script() {
     echo -e ""
-    echo -e "${COLOR_GREEN}${LANG[MENU_10]}${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}${LANG[MENU_11]}${COLOR_RESET}"
     echo -e ""
     echo -e "${COLOR_YELLOW}1. ${LANG[REMOVE_SCRIPT_ONLY]}${COLOR_RESET}"
     echo -e "${COLOR_YELLOW}2. ${LANG[REMOVE_SCRIPT_AND_PANEL]}${COLOR_RESET}"
@@ -1263,9 +1370,9 @@ check_update_status() {
 show_menu() {
     echo -e "${COLOR_GREEN}${LANG[MENU_TITLE]}${COLOR_RESET}"
     if [[ "$UPDATE_AVAILABLE" == true ]]; then
-		echo -e "${COLOR_GRAY}$(printf "${LANG[VERSION_LABEL]}" "$SCRIPT_VERSION ${COLOR_RED}${LANG[AVAILABLE_UPDATE]}${COLOR_RESET}")${COLOR_RESET}"
+                echo -e "${COLOR_GRAY}$(printf "${LANG[VERSION_LABEL]}" "$SCRIPT_VERSION ${COLOR_RED}${LANG[AVAILABLE_UPDATE]}${COLOR_RESET}")${COLOR_RESET}"
     else
-		echo -e "${COLOR_GRAY}$(printf "${LANG[VERSION_LABEL]}" "$SCRIPT_VERSION")${COLOR_RESET}"
+                echo -e "${COLOR_GRAY}$(printf "${LANG[VERSION_LABEL]}" "$SCRIPT_VERSION")${COLOR_RESET}"
     fi
     echo -e ""
     echo -e "${COLOR_YELLOW}1. ${LANG[MENU_1]}${COLOR_RESET}" # Install Remnawave Components
@@ -1275,12 +1382,12 @@ show_menu() {
     echo -e "${COLOR_YELLOW}4. ${LANG[MENU_4]}${COLOR_RESET}" # Install random template
     echo -e "${COLOR_YELLOW}5. ${LANG[MENU_5]}${COLOR_RESET}" # Custom Templates legiz
     echo -e "${COLOR_YELLOW}6. ${LANG[MENU_6]}${COLOR_RESET}" # Extensions distilium
+    echo -e "${COLOR_YELLOW}7. ${LANG[MENU_7]}${COLOR_RESET}" # AntiZapret-Core
     echo -e ""
-    echo -e "${COLOR_YELLOW}7. ${LANG[MENU_7]}${COLOR_RESET}" # Manage IPv6
-    echo -e "${COLOR_YELLOW}8. ${LANG[MENU_8]}${COLOR_RESET}" # Manage certificates domain
-    echo -e ""
-    echo -e "${COLOR_YELLOW}9. ${LANG[MENU_9]}${COLOR_RESET}" # Check for updates
-    echo -e "${COLOR_YELLOW}10. ${LANG[MENU_10]}${COLOR_RESET}" # Remove script
+    echo -e "${COLOR_YELLOW}8. ${LANG[MENU_8]}${COLOR_RESET}" # Manage IPv6
+    echo -e "${COLOR_YELLOW}9. ${LANG[MENU_9]}${COLOR_RESET}" # Manage certificates domain
+    echo -e "${COLOR_YELLOW}10. ${LANG[MENU_10]}${COLOR_RESET}" # Check for updates
+    echo -e "${COLOR_YELLOW}11. ${LANG[MENU_11]}${COLOR_RESET}" # Remove script
     echo -e ""
     echo -e "${COLOR_YELLOW}0. ${LANG[EXIT]}${COLOR_RESET}"
     echo -e "${COLOR_YELLOW}- ${LANG[FAST_START]//remnawave_reverse/${COLOR_GREEN}remnawave_reverse${COLOR_RESET}}"
@@ -1363,7 +1470,7 @@ manage_install() {
 #Manage Panel Access
 show_panel_access() {
     echo -e ""
-    echo -e "${COLOR_GREEN}${LANG[MENU_9]}${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}${LANG[ACCESS_PANEL]}${COLOR_RESET}"
     echo -e ""
     echo -e "${COLOR_YELLOW}1. ${LANG[PORT_8443_OPEN]}${COLOR_RESET}"
     echo -e "${COLOR_YELLOW}2. ${LANG[PORT_8443_CLOSE]}${COLOR_RESET}"
@@ -1818,8 +1925,8 @@ manage_warp() {
                     "tag": "warp-out",
                     "protocol": "freedom",
                     "settings": {
-					    "domainStrategy": "UseIP"
-					},
+                                            "domainStrategy": "UseIP"
+                                        },
                     "streamSettings": {
                         "sockopt": {
                             "interface": "warp",
@@ -1841,7 +1948,8 @@ manage_warp() {
                 config_json=$(echo "$config_json" | jq --argjson warp_rule "$warp_rule" '.routing.rules += [$warp_rule]' 2>/dev/null)
             fi
 
-            local update_response=$(make_api_request "PATCH" "${domain_url}/api/config-profiles" "$token" "{\"uuid\": \"$selected_uuid\", \"config\": $config_json}")
+            local patch_body=$(jq -n --arg uuid "$selected_uuid" --argjson config "$config_json" '{uuid: $uuid, config: $config}')
+            local update_response=$(make_api_request "PATCH" "${domain_url}/api/config-profiles" "$token" "$patch_body")
             if [ -z "$update_response" ] || ! echo "$update_response" | jq -e '.' > /dev/null 2>&1; then
                 echo -e "${COLOR_RED}${LANG[WARP_UPDATE_FAIL]}: Invalid response${COLOR_RESET}"
             fi
@@ -1951,7 +2059,8 @@ manage_warp() {
                 echo -e "${COLOR_YELLOW}${LANG[WARP_NO_WARP_SETTINGS2]}${COLOR_RESET}"
             fi
 
-            local update_response=$(make_api_request "PATCH" "${domain_url}/api/config-profiles" "$token" "{\"uuid\": \"$selected_uuid\", \"config\": $config_json}")
+            local patch_body=$(jq -n --arg uuid "$selected_uuid" --argjson config "$config_json" '{uuid: $uuid, config: $config}')
+            local update_response=$(make_api_request "PATCH" "${domain_url}/api/config-profiles" "$token" "$patch_body")
             if [ -z "$update_response" ] || ! echo "$update_response" | jq -e '.' > /dev/null 2>&1; then
                 echo -e "${COLOR_RED}${LANG[WARP_UPDATE_FAIL]}: Invalid response${COLOR_RESET}"
                 return 1
@@ -2505,6 +2614,807 @@ delete_applications() {
         echo -e "${COLOR_YELLOW}${LANG[EXIT]}${COLOR_RESET}"
     fi
 }
+
+#AntiZapret-Core
+manage_antizapret() {
+    echo -e ""
+    while true; do
+        echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_MENU_TITLE]}${COLOR_RESET}"
+        echo -e ""
+        echo -e "${COLOR_YELLOW}1. ${LANG[ANTIZAPRET_INSTALL]}${COLOR_RESET}"
+        echo -e "${COLOR_YELLOW}2. ${LANG[ANTIZAPRET_UNINSTALL]}${COLOR_RESET}"
+        echo -e "${COLOR_YELLOW}3. ${LANG[ANTIZAPRET_ADD_CONFIG]}${COLOR_RESET}"
+        echo -e "${COLOR_YELLOW}4. ${LANG[ANTIZAPRET_DELETE_CONFIG]}${COLOR_RESET}"
+        echo -e "${COLOR_YELLOW}5. ${LANG[ANTIZAPRET_LOGS]}${COLOR_RESET}"
+        echo -e ""
+        echo -e "${COLOR_YELLOW}0. ${LANG[EXIT]}${COLOR_RESET}"
+        echo -e ""
+        reading "${LANG[ANTIZAPRET_PROMPT]}" AZ_OPTION
+
+        case $AZ_OPTION in
+            1)
+                clear
+                install_antizapret
+                ;;
+            2)
+                clear
+                uninstall_antizapret
+                ;;
+            3)
+                clear
+                add_antizapret_config
+                ;;
+            4)
+                clear
+                remove_antizapret_config
+                ;;
+            5)
+                clear
+                view_antizapret_logs
+                ;;
+            0)
+                echo -e "${COLOR_YELLOW}${LANG[EXIT]}${COLOR_RESET}"
+                return 0
+                ;;
+            *)
+                echo -e "${COLOR_RED}${LANG[ANTIZAPRET_INVALID_CHOICE]}${COLOR_RESET}"
+                sleep 2
+                clear
+                ;;
+        esac
+    done
+}
+
+add_antizapret_config() {
+    local domain_url="127.0.0.1:3000"
+    
+    local antizapret_compose_file="${DIR_ANTIZAPRET}docker-compose.yml"
+    if [ ! -f "$antizapret_compose_file" ]; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_CONTAINER_NOT_FOUND]}${COLOR_RESET}"
+        echo -e ""
+        echo -e "${COLOR_YELLOW}${LANG[PRESS_ENTER_RETURN_MENU]}${COLOR_RESET}"
+        read
+        return 1
+    fi
+    echo -e "${COLOR_RED}${LANG[WARNING_LABEL]}${COLOR_RESET}"
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_CONFIRM_SERVER_PANEL]}${COLOR_RESET}"
+    echo -e ""
+    echo -e "${COLOR_GREEN}[?]${COLOR_RESET} ${COLOR_YELLOW}${LANG[CONFIRM_PROMPT]}${COLOR_RESET}"
+    read confirm
+    echo
+
+    if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+        echo -e "${COLOR_YELLOW}${LANG[EXIT]}${COLOR_RESET}"
+        exit 0
+    fi
+    
+    get_panel_token
+    token=$(cat "$TOKEN_FILE")
+
+    local config_response=$(make_api_request "GET" "http://${domain_url}/api/config-profiles" "$token")
+    if [ -z "$config_response" ] || ! echo "$config_response" | jq -e '.' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: Invalid response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    if ! echo "$config_response" | jq -e '.response.configProfiles | type == "array"' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: Response does not contain configProfiles array${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    local config_count=$(echo "$config_response" | jq '.response.configProfiles | length')
+    if [ "$config_count" -eq 0 ]; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: Empty configuration list${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    local configs=$(echo "$config_response" | jq -r '.response.configProfiles[] | select(.uuid and .name) | "\(.name) \(.uuid)"' 2>/dev/null)
+    if [ -z "$configs" ]; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: No valid configurations found in response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_SELECT_CONFIG]}${COLOR_RESET}"
+    echo -e ""
+    local i=1
+    declare -A config_map
+    while IFS=' ' read -r name uuid; do
+        echo -e "${COLOR_YELLOW}$i. $name${COLOR_RESET}"
+        config_map[$i]="$uuid"
+        ((i++))
+    done <<< "$configs"
+    echo -e ""
+    echo -e "${COLOR_YELLOW}0. ${LANG[EXIT]}${COLOR_RESET}"
+    echo -e ""
+    reading "${LANG[WARP_PROMPT1]}" CONFIG_OPTION
+
+    if [ "$CONFIG_OPTION" == "0" ]; then
+        echo -e "${COLOR_YELLOW}${LANG[EXIT]}${COLOR_RESET}"
+        clear
+        return 0
+    fi
+
+    if [ -z "${config_map[$CONFIG_OPTION]}" ]; then
+        echo -e "${COLOR_RED}${LANG[WARP_INVALID_CHOICE2]}${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    echo -e ""
+    echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_ADDING_SETTINGS]}${COLOR_RESET}"
+    echo -e ""
+
+    local selected_uuid=${config_map[$CONFIG_OPTION]}
+
+    local config_data=$(make_api_request "GET" "http://${domain_url}/api/config-profiles/$selected_uuid" "$token")
+    if [ -z "$config_data" ] || ! echo "$config_data" | jq -e '.' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: Invalid response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    local config_json
+    if echo "$config_data" | jq -e '.response.config' > /dev/null 2>&1; then
+        config_json=$(echo "$config_data" | jq -r '.response.config')
+    else
+        config_json=$(echo "$config_data" | jq -r '.config // ""')
+    fi
+
+    if [ -z "$config_json" ] || [ "$config_json" == "null" ]; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: No config found in response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    # Routing rules modification
+    local alternative_ip=$(grep "ALTERNATIVE_IP" "$antizapret_compose_file" | cut -d'=' -f2 || echo "n")
+    local alternative_fake_ip=$(grep "ALTERNATIVE_FAKE_IP" "$antizapret_compose_file" | cut -d'=' -f2 || echo "n")
+
+    local ip1="10.77.77.77"
+    local ip2="10.30.0.0/15"
+
+    if [ "$alternative_ip" == "y" ]; then
+        ip1="172.77.77.77"
+        ip2="172.30.0.0/15"
+    fi
+
+    if [ "$alternative_fake_ip" == "y" ]; then
+        ip2="198.18.0.0/15"
+    fi
+
+    while true; do
+        reading "${LANG[ANTIZAPRET_ENTER_BYPASS_DOMAIN]}" AZ_BYPASS_DOMAIN
+        if [[ -z "$AZ_BYPASS_DOMAIN" ]]; then
+            echo -e "${COLOR_RED}${LANG[ANTIZAPRET_DOMAIN_EMPTY]}${COLOR_RESET}"
+        elif [[ ! "$AZ_BYPASS_DOMAIN" =~ ^([a-zA-Z0-9](([a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])*)\.[a-zA-Z]{2,}|([0-9]{1,3}\.){3}[0-9]{1,3})$ ]]; then
+            echo -e "${COLOR_RED}${LANG[ANTIZAPRET_DOMAIN_INVALID]}${COLOR_RESET}"
+        else
+            break
+        fi
+    done
+
+    # DNS modification
+    config_json=$(echo "$config_json" | jq --arg ip1 "$ip1" '.dns = {
+        "servers": [
+          {
+            "port": 53,
+            "address": $ip1
+          }
+        ]
+      }')
+
+    local route_ips_file="${DIR_ANTIZAPRET}result/route-ips.txt"
+    local route_ips_v6_file="${DIR_ANTIZAPRET}result/route-ips-v6.txt"
+    local additional_ips=()
+
+    local empty_ipv4=false
+    local empty_ipv6=false
+
+    # Read IPv4 route-ips
+    if [ -s "$route_ips_file" ]; then
+        mapfile -t ipv4_ips < "$route_ips_file"
+        additional_ips+=("${ipv4_ips[@]}")
+    else
+        empty_ipv4=true
+    fi
+
+    # Read IPv6 route-ips
+    if [ -s "$route_ips_v6_file" ]; then
+        mapfile -t ipv6_ips < "$route_ips_v6_file"
+        additional_ips+=("${ipv6_ips[@]}")
+    else
+        empty_ipv6=true
+    fi
+
+    if [ "$empty_ipv4" = true ] && [ "$empty_ipv6" = true ]; then
+        printf "${COLOR_RED}${LANG[ANTIZAPRET_CONFIG_REMINDER_EMPTY_ROUTE_IPS]}${COLOR_RESET}\n" "Route-ips, Route-ips-v6"
+        echo -e ""
+    elif [ "$empty_ipv4" = true ]; then
+        printf "${COLOR_RED}${LANG[ANTIZAPRET_CONFIG_REMINDER_EMPTY_ROUTE_IPS]}${COLOR_RESET}\n" "Route-ips"
+        echo -e ""
+    elif [ "$empty_ipv6" = true ]; then
+        printf "${COLOR_RED}${LANG[ANTIZAPRET_CONFIG_REMINDER_EMPTY_ROUTE_IPS]}${COLOR_RESET}\n" "Route-ips-v6"
+        echo -e ""
+    fi
+
+    local ip_list=()
+    ip_list+=("$ip2" "fd00:18::/111")
+    ip_list+=("${additional_ips[@]}")
+
+    local all_ips_json=$(printf '%s\n' "${ip_list[@]}" | jq -R . | jq -s .)
+
+    local node_ip_list=()
+    node_ip_list+=("$ip1" "$ip2" "fd00:18::/111")
+    local node_ips_json=$(printf '%s\n' "${node_ip_list[@]}" | jq -R . | jq -s .)
+
+    local new_rule=$(jq -n --argjson ips_array "$node_ips_json" '{
+        "ip": $ips_array,
+        "outboundTag": "DIRECT"
+      }')
+
+
+    config_json=$(echo "$config_json" | jq 'del(.routing.rules[] | select(.outboundTag == "DIRECT" and (.ip[0] == "10.77.77.77" or .ip[0] == "172.77.77.77")))')
+    config_json=$(echo "$config_json" | jq --argjson new_rule "$new_rule" '.routing.rules = [$new_rule] + .routing.rules')
+
+    config_json=$(echo "$config_json" | jq '
+        .outbounds |= map(
+            if .tag == "DIRECT" then
+                {
+                  "tag": "DIRECT",
+                  "protocol": "freedom",
+                  "settings": {
+                    "domainStrategy": "UseIP"
+                  },
+                  "streamSettings": {
+                    "sockopt": {
+                      "tcpFastOpen": true
+                    }
+                  }
+                }
+            else
+                .
+            end
+        )
+    ')
+
+    local patch_body=$(jq -n --arg uuid "$selected_uuid" --argjson config "$config_json" '{uuid: $uuid, config: $config}')
+    local update_response=$(make_api_request "PATCH" "http://${domain_url}/api/config-profiles" "$token" "$patch_body")
+    if [ -z "$update_response" ] || ! echo "$update_response" | jq -e '.' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}${COLOR_RESET}"
+        manage_antizapret
+        return 1
+    else
+        echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_NODE_CONFIG_SUCCESS]}${COLOR_RESET}"
+    fi
+
+    local client_config_json=$(jq -c -n \
+        --arg ip1 "$ip1" \
+        --arg domain "$AZ_BYPASS_DOMAIN" \
+        --argjson ips "$all_ips_json" \
+        '
+{
+  "dns": {
+    "servers": [
+    { "address": "localhost", "domains": [ "domain:\($domain)" ], "skipFallback": true },
+            { "address": "https://1.1.1.1/dns-query", "domains": [ "domain:\($domain)" ], "skipFallback": true },
+      { "tag": "dns-proxy", "port": 53, "address": $ip1 }
+    ],
+    "queryStrategy": "UseIP"
+  },
+  "routing": {
+    "rules": [
+      { "inboundTag": [ "dns-proxy" ], "outboundTag": "proxy" },
+      { "type": "field", "protocol": [ "bittorrent" ], "outboundTag": "direct" },
+      { "ip": $ips, "type": "field", "outboundTag": "proxy" },
+      { "ip": [ "geoip:private" ], "type": "field", "outboundTag": "direct" },
+      { "type": "field", "domain": [ "geosite:private" ], "outboundTag": "direct" },
+      { "ip": [ "0.0.0.0/0", "::/0" ], "type": "field", "outboundTag": "direct" }
+    ],
+    "domainMatcher": "hybrid",
+    "domainStrategy": "IPOnDemand"
+  },
+  "inbounds": [
+    { "tag": "socks", "port": 10808, "listen": "127.0.0.1", "protocol": "socks", "settings": { "udp": true, "auth": "noauth" }, "sniffing": { "enabled": true, "routeOnly": false, "destOverride": [ "http", "tls", "quic" ] } },
+    { "tag": "http", "port": 10809, "listen": "127.0.0.1", "protocol": "http", "settings": { "allowTransparent": false }, "sniffing": { "enabled": true, "routeOnly": false, "destOverride": [ "http", "tls", "quic" ] } }
+  ],
+  "outbounds": [
+    { "tag": "direct", "protocol": "freedom" },
+    { "tag": "block", "protocol": "blackhole" }
+  ]
+}
+        ')
+
+    local templates_response=$(make_api_request "GET" "http://${domain_url}/api/subscription-templates" "$token")
+    local template_uuid=$(echo "$templates_response" | jq -r '(.response.subscriptionTemplates // .response.templates // .response // [])[]? | select(.name == "AntiZapret") | .uuid' 2>/dev/null | head -n 1)
+
+    if [ -n "$template_uuid" ] && [ "$template_uuid" != "null" ] && [ "$template_uuid" != "" ]; then
+        local patch_template_body=$(jq -n --arg uuid "$template_uuid" --argjson templateJson "$client_config_json" '{uuid: $uuid, name: "AntiZapret", templateType: "XRAY_JSON", templateJson: $templateJson}')
+        if make_api_request "PATCH" "http://${domain_url}/api/subscription-templates" "$token" "$patch_template_body" > /dev/null 2>&1; then
+            echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_TEMPLATE_UPDATED_SUCCESS]}${COLOR_RESET}"
+        fi
+    else
+        local create_template_body=$(jq -n '{name: "AntiZapret", templateType: "XRAY_JSON"}')
+        local create_response=$(make_api_request "POST" "http://${domain_url}/api/subscription-templates" "$token" "$create_template_body")
+        local new_template_uuid=$(echo "$create_response" | jq -r '.response.uuid // .uuid' 2>/dev/null)
+
+        if [ -n "$new_template_uuid" ] && [ "$new_template_uuid" != "null" ]; then
+            local patch_new_template_body=$(jq -n --arg uuid "$new_template_uuid" --argjson templateJson "$client_config_json" '{uuid: $uuid, name: "AntiZapret", templateType: "XRAY_JSON", templateJson: $templateJson}')
+            if make_api_request "PATCH" "http://${domain_url}/api/subscription-templates" "$token" "$patch_new_template_body" > /dev/null 2>&1; then
+                echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_TEMPLATE_CREATED_SUCCESS]}${COLOR_RESET}"
+            else
+                echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: Failed to update new template with JSON. Response: $create_response${COLOR_RESET}"
+                manage_antizapret
+                return 1
+            fi
+        else
+            echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: Failed to create template or get UUID. Response: $create_response${COLOR_RESET}"
+            manage_antizapret
+            return 1
+        fi
+    fi
+
+    echo -e ""
+    echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_ADD_SUCCESS]}${COLOR_RESET}"
+    
+    setup_antizapret_cron_job "$selected_uuid"
+
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[PRESS_ENTER_RETURN_MENU]}${COLOR_RESET}"
+    read
+    clear
+}
+
+remove_antizapret_config() {
+    local domain_url="127.0.0.1:3000"
+    echo -e "${COLOR_RED}${LANG[WARNING_LABEL]}${COLOR_RESET}"
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_CONFIRM_SERVER_PANEL]}${COLOR_RESET}"
+    echo -e ""
+    echo -e "${COLOR_GREEN}[?]${COLOR_RESET} ${COLOR_YELLOW}${LANG[CONFIRM_PROMPT]}${COLOR_RESET}"
+    read confirm
+    echo
+    if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+        echo -e "${COLOR_YELLOW}${LANG[EXIT]}${COLOR_RESET}"
+        exit 0
+    fi
+    get_panel_token
+    token=$(cat "$TOKEN_FILE")
+    local config_response=$(make_api_request "GET" "http://${domain_url}/api/config-profiles" "$token")
+    if [ -z "$config_response" ] || ! echo "$config_response" | jq -e '.' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: Invalid response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    if ! echo "$config_response" | jq -e '.response.configProfiles | type == "array"' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: Response does not contain configProfiles array${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    local config_count=$(echo "$config_response" | jq '.response.configProfiles | length')
+    if [ "$config_count" -eq 0 ]; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: Empty configuration list${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    local configs=$(echo "$config_response" | jq -r '.response.configProfiles[] | select(.uuid and .name) | "\(.name) \(.uuid)"' 2>/dev/null)
+    if [ -z "$configs" ]; then
+        echo -e "${COLOR_RED}${LANG[WARP_NO_CONFIGS]}: No valid configurations found in response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_SELECT_CONFIG_DELETE]}${COLOR_RESET}"
+    echo -e ""
+    local i=1
+    declare -A config_map
+    while IFS=' ' read -r name uuid; do
+        echo -e "${COLOR_YELLOW}$i. $name${COLOR_RESET}"
+        config_map[$i]="$uuid"
+        ((i++))
+    done <<< "$configs"
+    echo -e ""
+    echo -e "${COLOR_YELLOW}0. ${LANG[EXIT]}${COLOR_RESET}"
+    echo -e ""
+    reading "${LANG[WARP_PROMPT1]}" CONFIG_OPTION
+
+    if [ "$CONFIG_OPTION" == "0" ]; then
+        echo -e "${COLOR_YELLOW}${LANG[EXIT]}${COLOR_RESET}"
+        return 0
+    fi
+
+    if [ -z "${config_map[$CONFIG_OPTION]}" ]; then
+        echo -e "${COLOR_RED}${LANG[WARP_INVALID_CHOICE2]}${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    local selected_uuid=${config_map[$CONFIG_OPTION]}
+
+    local config_data=$(make_api_request "GET" "http://${domain_url}/api/config-profiles/$selected_uuid" "$token")
+    if [ -z "$config_data" ] || ! echo "$config_data" | jq -e '.' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: Invalid response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    echo -e ""
+    remove_antizapret_cron_job
+
+    local config_json
+    if echo "$config_data" | jq -e '.response.config' > /dev/null 2>&1; then
+        config_json=$(echo "$config_data" | jq -r '.response.config')
+    else
+        config_json=$(echo "$config_data" | jq -r '.config // ""')
+    fi
+
+    if [ -z "$config_json" ] || [ "$config_json" == "null" ]; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: No config found in response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+    
+    # Remove DNS settings
+    if echo "$config_json" | jq -e '.dns' > /dev/null 2>&1; then
+        config_json=$(echo "$config_json" | jq 'del(.dns)')
+        echo -e ""
+        echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_DNS_REMOVED]}${COLOR_RESET}"
+    else
+        echo -e ""
+        echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_DNS_NOT_FOUND]}${COLOR_RESET}"
+    fi
+
+    # Remove routing rule
+    if echo "$config_json" | jq -e '.routing.rules[] | select(.outboundTag == "DIRECT" and (.ip[0] == "10.77.77.77" or .ip[0] == "172.77.77.77"))' > /dev/null 2>&1; then
+        config_json=$(echo "$config_json" | jq 'del(.routing.rules[] | select(.outboundTag == "DIRECT" and (.ip[0] == "10.77.77.77" or .ip[0] == "172.77.77.77")))')
+        echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_RULE_REMOVED]}${COLOR_RESET}"
+    else
+        echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_RULE_NOT_FOUND]}${COLOR_RESET}"
+    fi
+
+    # Reset DIRECT outbound to default
+    config_json=$(echo "$config_json" | jq '
+        .outbounds |= map(
+            if .tag == "DIRECT" then
+                {
+                  "tag": "DIRECT",
+                  "protocol": "freedom"
+                }
+            else
+                .
+            end
+        )
+    ')
+
+    local patch_body=$(jq -n --arg uuid "$selected_uuid" --argjson config "$config_json" '{uuid: $uuid, config: $config}')
+    local update_response=$(make_api_request "PATCH" "http://${domain_url}/api/config-profiles" "$token" "$patch_body")
+    if [ -z "$update_response" ] || ! echo "$update_response" | jq -e '.' > /dev/null 2>&1; then
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_UPDATE_FAIL]}: Invalid response${COLOR_RESET}"
+        sleep 2
+        return 1
+    fi
+
+    # Delete subscription template
+    local templates_response=$(make_api_request "GET" "http://${domain_url}/api/subscription-templates" "$token")
+    local template_uuid=$(echo "$templates_response" | jq -r '(.response.subscriptionTemplates // .response.templates // .response // [])[]? | select(.name == "AntiZapret") | .uuid' 2>/dev/null | head -n 1)
+
+    if [ -n "$template_uuid" ] && [ "$template_uuid" != "null" ] && [ "$template_uuid" != "" ]; then
+        if make_api_request "DELETE" "http://${domain_url}/api/subscription-templates/$template_uuid" "$token" > /dev/null 2>&1; then
+            echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_DELETE_TEMPLATE_SUCCESS]}${COLOR_RESET}"
+        else
+            echo -e "${COLOR_RED}${LANG[ANTIZAPRET_DELETE_TEMPLATE_FAIL]}${COLOR_RESET}"
+        fi
+    else
+        echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_TEMPLATE_NOT_FOUND_DELETE]}${COLOR_RESET}"
+    fi
+
+    echo -e ""
+    echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_DELETE_SUCCESS]}${COLOR_RESET}"
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[PRESS_ENTER_RETURN_MENU]}${COLOR_RESET}"
+    read
+    clear
+}
+
+
+install_antizapret() {
+    echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_INSTALLING]}${COLOR_RESET}"
+    echo -e ""
+
+    # Check and create swap file if RAM is less than 2GB
+    TOTAL_RAM_MB=$(free -m | awk '/Mem:/ {print $2}')
+    if [ "$TOTAL_RAM_MB" -lt 2048 ]; then # 2048 MB = 2 GB
+        echo -e "${COLOR_YELLOW}${LANG[SWAP_RAM_LOW]}${COLOR_RESET}"
+        if ! grep -q "/swapfile" /etc/fstab; then
+            fallocate -l 2G /swapfile
+            chmod 600 /swapfile
+            mkswap /swapfile
+            swapon /swapfile
+            echo '/swapfile none swap sw 0 0' >> /etc/fstab
+            echo -e "${COLOR_GREEN}${LANG[SWAP_CREATED_SUCCESS]}${COLOR_RESET}"
+        else
+            echo -e "${COLOR_YELLOW}${LANG[SWAP_ALREADY_EXISTS]}${COLOR_RESET}"
+        fi
+    fi
+    
+    local install_dir="${DIR_ANTIZAPRET}"
+    mkdir -p "$install_dir"
+    cd "$install_dir" || { echo -e "${COLOR_RED}${LANG[CHANGE_DIR_FAILED]} $install_dir${COLOR_RESET}"; return 1; }
+
+    # Download docker-compose.yml
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_DOWNLOAD_COMPOSE]}${COLOR_RESET}"
+    if ! curl -sL https://raw.githubusercontent.com/UtyaDev/AntiZapret-Core/main/docker-compose.yml -o "$install_dir/docker-compose.yml"; then
+        echo -e "${COLOR_RED}Failed to download docker-compose.yml.${COLOR_RESET}"
+        return 1
+    fi
+
+    # Ask parameters
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_CONFIGURATION_PROMPT]}${COLOR_RESET}"
+    reading "${LANG[ANTIZAPRET_ENTER_DNS]}" AZ_DNS
+    AZ_DNS=${AZ_DNS:-1}
+    
+    reading "${LANG[ANTIZAPRET_ENTER_ALT_IP]}" AZ_ALT_IP
+    AZ_ALT_IP=${AZ_ALT_IP:-n}
+    
+    reading "${LANG[ANTIZAPRET_ENTER_ALT_FAKE_IP]}" AZ_ALT_FAKE_IP
+    AZ_ALT_FAKE_IP=${AZ_ALT_FAKE_IP:-n}
+    
+    reading "${LANG[ANTIZAPRET_ENTER_SSH_PROT]}" AZ_SSH_PROT
+    AZ_SSH_PROT=${AZ_SSH_PROT:-y}
+    
+    reading "${LANG[ANTIZAPRET_ENTER_ATTACK_PROT]}" AZ_ATTACK_PROT
+    AZ_ATTACK_PROT=${AZ_ATTACK_PROT:-y}
+    
+    reading "${LANG[ANTIZAPRET_ENTER_AGG_LIMIT]}" AZ_AGG_LIMIT
+    AZ_AGG_LIMIT=${AZ_AGG_LIMIT:-500}
+    
+    reading "${LANG[ANTIZAPRET_ENTER_CLEAR_HOSTS]}" AZ_CLEAR_HOSTS
+    AZ_CLEAR_HOSTS=${AZ_CLEAR_HOSTS:-y}
+
+    # Modify the downloaded docker-compose.yml with user inputs
+    sed -i "s/^\s*- ANTIZAPRET_DNS=.*$/      - ANTIZAPRET_DNS=$AZ_DNS/" "$install_dir/docker-compose.yml"
+    sed -i "s/^\s*- ALTERNATIVE_IP=.*$/      - ALTERNATIVE_IP=$AZ_ALT_IP/" "$install_dir/docker-compose.yml"
+    sed -i "s/^\s*- ALTERNATIVE_FAKE_IP=.*$/      - ALTERNATIVE_FAKE_IP=$AZ_ALT_FAKE_IP/" "$install_dir/docker-compose.yml"
+    sed -i "s/^\s*- SSH_PROTECTION=.*$/      - SSH_PROTECTION=$AZ_SSH_PROT/" "$install_dir/docker-compose.yml"
+    sed -i "s/^\s*- ATTACK_PROTECTION=.*$/      - ATTACK_PROTECTION=$AZ_ATTACK_PROT/" "$install_dir/docker-compose.yml"
+    sed -i "s/^\s*- ROUTE_AGGREGATION_LIMIT=.*$/      - ROUTE_AGGREGATION_LIMIT=$AZ_AGG_LIMIT/" "$install_dir/docker-compose.yml"
+    sed -i "s/^\s*- CLEAR_HOSTS=.*$/      - CLEAR_HOSTS=$AZ_CLEAR_HOSTS/" "$install_dir/docker-compose.yml"
+
+    docker compose up -d
+    echo -e ""
+    echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_SUCCESS_INSTALL]}${COLOR_RESET}"
+    echo -e "${COLOR_RED}${LANG[ANTIZAPRET_CONFIG_REMINDER]}${COLOR_RESET}"
+    echo -e ""
+    echo -e "${COLOR_YELLOW}${LANG[PRESS_ENTER_RETURN_MENU]}${COLOR_RESET}"
+    read
+    clear
+}
+
+uninstall_antizapret() {
+    echo -e "${COLOR_YELLOW}${LANG[ANTIZAPRET_UNINSTALLING]}${COLOR_RESET}"
+
+    local install_dir="${DIR_ANTIZAPRET}"
+
+    if [ -d "$install_dir" ]; then
+        cd "$install_dir" || return 1
+
+        docker compose down --remove-orphans
+
+        remove_antizapret_cron_job "quiet"
+
+        rm -rf "$install_dir"
+
+        echo ""
+        echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_SUCCESS_UNINSTALL]}${COLOR_RESET}"
+        echo ""
+    else
+        echo ""
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_CONTAINER_NOT_FOUND]}${COLOR_RESET}"
+        echo ""
+    fi
+    echo -e "${COLOR_YELLOW}${LANG[PRESS_ENTER_RETURN_MENU]}${COLOR_RESET}"
+    read
+    clear
+}
+
+view_antizapret_logs() {
+    local install_dir="${DIR_ANTIZAPRET}"
+    if [ -d "$install_dir" ]; then
+        cd "$install_dir" || return
+        echo -e "${COLOR_YELLOW}Press Ctrl+C to return to the menu${COLOR_RESET}"
+        trap 'trap - INT; clear; return' INT
+        docker compose logs -f
+        trap - INT
+    else
+        echo -e "${COLOR_RED}${LANG[ANTIZAPRET_CONTAINER_NOT_FOUND]}${COLOR_RESET}"
+        sleep 2
+    fi
+    clear
+}
+
+setup_antizapret_cron_job() {
+    local config_profile_uuid="$1"
+    local cron_script="${DIR_ANTIZAPRET}update_antizapret_template.sh"
+
+    cat << EOF_CRON_SCRIPT > "$cron_script"
+#!/bin/bash
+
+set -euo pipefail
+
+# Cron script for updating AntiZapret template in Remnawave Panel
+TOKEN_FILE="${DIR_REMNAWAVE}token"
+DIR_ANTIZAPRET="${DIR_ANTIZAPRET}"
+DOMAIN_URL="127.0.0.1:3000"
+CONFIG_PROFILE_UUID="${config_profile_uuid}"
+
+make_api_request_cron() {
+    local method=\$1
+    local url=\$2
+    local token=\$3
+    local data=\${4:-}
+    local headers=(
+        -H "Authorization: Bearer \$token"
+        -H "Content-Type: application/json"
+        -H "X-Forwarded-For: \${DOMAIN_URL}"
+        -H "X-Forwarded-Proto: https"
+        -H "X-Remnawave-Client-Type: browser"
+    )
+    if [ -n "\$data" ]; then
+        curl -s -X "\$method" "\$url" "\${headers[@]}" -d "\$data"
+    else
+        curl -s -X "\$method" "\$url" "\${headers[@]}"
+    fi
+}
+
+get_panel_token_cron() {
+    if [ -f "\$TOKEN_FILE" ]; then
+        local token=\$(cat "\$TOKEN_FILE")
+        local test_response=\$(make_api_request_cron "GET" "http://\${DOMAIN_URL}/api/config-profiles" "\$token")
+        if [ -z "\$test_response" ] || ! echo "\$test_response" | jq -e '.response.configProfiles' > /dev/null 2>&1; then
+            return 1
+        fi
+        echo "\$token"
+        return 0
+    else
+        return 1
+    fi
+}
+
+main() {
+    # Update AntiZapret containers
+    cd "\$DIR_ANTIZAPRET"
+    docker compose pull > /dev/null 2>&1
+    docker compose up -d > /dev/null 2>&1
+
+    command -v jq >/dev/null 2>&1 || { echo "Error: jq is not installed."; exit 1; }
+    local token
+    token=\$(get_panel_token_cron) || { exit 1; }
+    local config_data=\$(make_api_request_cron "GET" "http://\${DOMAIN_URL}/api/config-profiles/\${CONFIG_PROFILE_UUID}" "\$token")
+    if [ -z "\$config_data" ] || ! echo "\$config_data" | jq -e '.' > /dev/null 2>&1; then
+        exit 1
+    fi
+    local config_json
+    if echo "\$config_data" | jq -e '.response.config' > /dev/null 2>&1; then
+        config_json=\$(echo "\$config_data" | jq -r '.response.config')
+    else
+        config_json=\$(echo "\$config_data" | jq -r '.config // ""')
+    fi
+    if [ -z "\$config_json" ] || [ "\$config_json" == "null" ]; then
+        exit 1
+    fi
+    local antizapret_compose_file="\${DIR_ANTIZAPRET}docker-compose.yml"
+    if [ ! -f "\$antizapret_compose_file" ]; then
+        exit 1
+    fi
+
+    # Define ip2 before it's used
+    local alternative_ip=\$(grep "ALTERNATIVE_IP" "\$antizapret_compose_file" | cut -d'=' -f2 || echo "n")
+    local alternative_fake_ip=\$(grep "ALTERNATIVE_FAKE_IP" "\$antizapret_compose_file" | cut -d'=' -f2 || echo "n")
+    
+    local ip2="10.30.0.0/15"
+    if [ "\$alternative_ip" == "y" ]; then
+        ip2="172.30.0.0/15"
+    fi
+    if [ "\$alternative_fake_ip" == "y" ]; then
+        ip2="198.18.0.0/15"
+    fi
+    
+    local route_ips_file="\${DIR_ANTIZAPRET}result/route-ips.txt"
+    local route_ips_v6_file="\${DIR_ANTIZAPRET}result/route-ips-v6.txt"
+    local additional_ips=()
+    if [ -s "\$route_ips_file" ]; then
+        mapfile -t ipv4_ips < "\$route_ips_file"
+        additional_ips+=("\${ipv4_ips[@]}")
+    fi
+
+    if [ -s "\$route_ips_v6_file" ]; then
+        mapfile -t ipv6_ips < "\$route_ips_v6_file"
+        additional_ips+=("\${ipv6_ips[@]}")
+    fi
+
+    local ip_list=()
+    ip_list+=("\$ip2" "fd00:18::/111") # These are from original config, always include them.
+    ip_list+=("\${additional_ips[@]}")
+
+    local all_ips_json=\$(printf '%s\\n' "\${ip_list[@]}" | jq -R . | jq -s .)
+    local templates_response=\$(make_api_request_cron "GET" "http://\${DOMAIN_URL}/api/subscription-templates" "\$token")
+    local template_uuid=\$(echo "\$templates_response" | jq -r '(.response.subscriptionTemplates // .response.templates // .response // [])[]? | select(.name == "AntiZapret") | .uuid' 2>/dev/null | head -n 1)
+
+    if [ -z "\$template_uuid" ] || [ "\$template_uuid" == "null" ]; then
+        exit 1
+    fi
+
+    local template_data=\$(make_api_request_cron "GET" "http://\${DOMAIN_URL}/api/subscription-templates/\${template_uuid}" "\$token")
+    local client_config_json_str=\$(echo "\$template_data" | jq -r '.response.templateJson // .templateJson // ""')
+
+    if [ -z "\$client_config_json_str" ]; then
+        exit 1
+    fi
+
+    # Update routing rules in client_config_json_str
+    local updated_client_config_json=\$(echo "\$client_config_json_str" | jq --argjson new_ips "\$all_ips_json" '
+        .routing.rules |= map(
+            if .outboundTag == "proxy" and .ip then
+                .ip = (\$new_ips)
+            else
+                .
+            end
+        )
+    ')
+
+    if ! echo "\$updated_client_config_json" | jq -e '.' > /dev/null 2>&1; then
+        echo "Updated client_config_json is invalid JSON. Exiting."
+        exit 1
+    fi
+
+    local patch_payload=\$(jq -n \
+        --arg uuid "\$template_uuid" \
+        --arg name "AntiZapret" \
+        --arg templateType "XRAY_JSON" \
+        --argjson templateJson "\$updated_client_config_json" \
+        '{
+            uuid: \$uuid,
+            name: \$name,
+            templateType: \$templateType,
+            templateJson: \$templateJson
+        }')
+    
+    local patch_response=\$(make_api_request_cron "PATCH" "http://\${DOMAIN_URL}/api/subscription-templates" "\$token" "\$patch_payload")
+    
+    if echo "\$patch_response" | jq -e '.response.uuid' > /dev/null 2>&1; then
+        echo -e "Subscription template patched successfully."
+    else
+        echo -e "Failed to patch subscription template. Exiting."
+        exit 1
+    fi
+}
+
+main "\$@"
+EOF_CRON_SCRIPT
+
+    chmod +x "$cron_script"
+
+    local cron_entry="30 4 * * * $cron_script"
+    add_cron_rule "$cron_entry"
+    printf "${COLOR_GREEN}${LANG[ANTIZAPRET_CRON_JOB_ADDED]}${COLOR_RESET}\n" "$config_profile_uuid"
+}
+
+remove_antizapret_cron_job() {
+    local quiet="${1:-}"
+    local cron_script="${DIR_ANTIZAPRET}update_antizapret_template.sh"
+    crontab -u root -l 2>/dev/null | grep -v "$cron_script" | crontab -u root -
+    if [ "$quiet" != "quiet" ]; then
+        echo -e "${COLOR_GREEN}${LANG[ANTIZAPRET_CRON_JOB_REMOVED]}${COLOR_RESET}"
+    fi
+
+    if [ -f "$cron_script" ]; then
+        rm -f "$cron_script"
+    fi
+}
+
 #Extensions by legiz
 
 add_cron_rule() {
@@ -2698,6 +3608,7 @@ randomhtml() {
 
 install_packages() {
     echo -e "${COLOR_YELLOW}${LANG[INSTALL_PACKAGES]}${COLOR_RESET}"
+
     
     if ! apt-get update -y; then
         echo -e "${COLOR_RED}${LANG[ERROR_UPDATE_LIST]}${COLOR_RESET}" >&2
@@ -3090,7 +4001,7 @@ EOL
 #Manage Certificates
 show_manage_certificates() {
     echo -e ""
-    echo -e "${COLOR_GREEN}${LANG[MENU_8]}${COLOR_RESET}"
+    echo -e "${COLOR_GREEN}${LANG[MENU_9]}${COLOR_RESET}"
     echo -e ""
     echo -e "${COLOR_YELLOW}1. ${LANG[CERT_UPDATE]}${COLOR_RESET}"
     echo -e "${COLOR_YELLOW}2. ${LANG[CERT_GENERATE]}${COLOR_RESET}"
@@ -3475,7 +4386,7 @@ register_remnawave() {
 }
 
 get_panel_token() {
-    TOKEN_FILE="${DIR_REMNAWAVE}/token"
+    TOKEN_FILE="${DIR_REMNAWAVE}token"
     local domain_url="127.0.0.1:3000"
     
     local auth_status=$(make_api_request "GET" "http://${domain_url}/api/auth/status" "")
@@ -5135,10 +6046,10 @@ EOL
 
     local domain_url="127.0.0.1:3000"
     local target_dir="/opt/remnawave"
-	
+
     echo -e "${COLOR_YELLOW}${LANG[REGISTERING_REMNAWAVE]}${COLOR_RESET}"
     sleep 20
-	
+
     echo -e "${COLOR_YELLOW}${LANG[CHECK_CONTAINERS]}${COLOR_RESET}"
     local attempts=0
     local max_attempts=5
@@ -5603,24 +6514,30 @@ case $OPTION in
         remnawave_reverse
         ;;
     7)
-        manage_ipv6
+        manage_antizapret
         sleep 2
         log_clear
         remnawave_reverse
         ;;
     8)
-        manage_certificates
+        manage_ipv6
         sleep 2
         log_clear
         remnawave_reverse
         ;;
     9)
-        update_remnawave_reverse
+        manage_certificates
         sleep 2
         log_clear
         remnawave_reverse
         ;;
     10)
+        update_remnawave_reverse
+        sleep 2
+        log_clear
+        remnawave_reverse
+        ;;
+    11)
         remove_script
         ;;
     0)
