@@ -166,13 +166,22 @@ https://panel.example.com/auth/login?<SECRET_KEY>=<SECRET_KEY>
 - **TCP оптимизация**: Алгоритм контроля перегрузки BBR
 - **Маскировка**: Выбор случайного шаблона веб-сайта
 
+### Продвинутые расширения
+- **AntiZapret-Core** (от UtyaDev): Интеграция для умной маршрутизации.
+  - Автоматическая настройка правил маршрутизации ноды.
+  - Автоматическое создание и обновление шаблонов подписки Remnawave.
+  - Ежедневная синхронизация списков заблокированных ресурсов и обновление контейнеров через cron.
+- **Кастомные шаблоны страницы подписки** (от legiz): Темы Orion и другие для страницы подписки.
+- **WARP Native** (от distillium): Быстрая интеграция Cloudflare WARP для исходящего трафика.
+- **Резервное копирование и восстановление** (от distillium): Инструменты для управления данными панели и ноды.
+
 ---
 
 ## Быстрый старт
 
 Выполните следующую команду для начала установки:
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/eGamesAPI/remnawave-reverse-proxy/refs/heads/main/install_remnawave.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/UtyaDev/remnawave-reverse-proxy/refs/heads/main/install_remnawave.sh)
 ```
 
 <p align="center">
